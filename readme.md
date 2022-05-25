@@ -11,3 +11,11 @@ Python app that writes text to Betabrite signs.
 * Both apps can also run within docker using the Dockerfile and docker-compose-yml files
 
 Big thanks to https://github.com/brycethomsen/chip-marquee for starting this whole thing! 
+
+## Manuals
+https://github.com/msparks/alphasign
+https://alphasign.readthedocs.io/en/latest/index.html
+
+## Cable design
+https://dens-site.net/betabrite/betabrite.htm
+https://wls.wwco.com/ledsigns/alpha/cable.html

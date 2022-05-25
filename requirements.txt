@@ -1,6 +1,5 @@
+git+https://github.com/mrquatsch/alphasign
+interfaces
 flask
-alphasign
-pyserial
 psutil
 constants
-gunicorn

@@ -9,6 +9,7 @@ import time
 def display():
     sleepBetweenMessages = 20
     conn = sqlite3.connect('/app/db/marquee_messages.db')
+    #conn = sqlite3.connect('/mnt/docker/marquee/db/marquee_messages.db')
     c = conn.cursor()
     timeout = 0
     while True:
@@ -36,7 +37,8 @@ def display():
                                                 label="A",
                                                 mode=mode)
                 try:
-                    print("Sending to sign: %s" % (display_msg))
+                    #print("Sending to sign: %s" % (display_msg))
+                    #print(display_msg)
                     sign.write(display_msg)
                 except Exception as e:
                     print("Failed to write to sign: " + str(e))
