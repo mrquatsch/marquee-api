@@ -9,14 +9,13 @@ import time
 def display():
     sleepBetweenMessages = 20
     conn = sqlite3.connect('/app/db/marquee_messages.db')
-    #conn = sqlite3.connect('/mnt/docker/marquee/db/marquee_messages.db')
     c = conn.cursor()
     timeout = 0
+    previous_display_msg = " "
+
     while True:
         try:
-            #sign = alphasign.interfaces.local.Serial(device='/dev/ttyUSB0')
             sign = alphasign.Serial(device='/dev/ttyUSB0')
-            #sign = alphasign.USB("2478:2008")
             sign.connect()
 
             rows = c.execute('select text, color_name, font_name, mode_name ' + \
@@ -36,13 +35,18 @@ def display():
                 display_msg = alphasign.Text("%s%s%s" % (color, font, message),
                                                 label="A",
                                                 mode=mode)
-                try:
-                    #print("Sending to sign: %s" % (display_msg))
-                    #print(display_msg)
-                    sign.write(display_msg)
-                except Exception as e:
-                    print("Failed to write to sign: " + str(e))
-                    continue #not working correctly
+
+                if(str(display_msg) != str(previous_display_msg)):
+                    try:
+                        print("Writing message: %s, color: %s, font: %s, mode: %s" % (message, color, font, mode))
+                        sign.write(display_msg)
+                        previous_display_msg = display_msg
+                    except Exception as e:
+                        print("Failed to write to sign: " + str(e))
+                        continue #not working correctly
+                else:
+                    print("Display message has not changed. Skipping write...")
+
                 time.sleep(sleepBetweenMessages)
                 timeout = 0
             time.sleep(sleepBetweenMessages)
