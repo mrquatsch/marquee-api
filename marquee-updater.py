@@ -12,7 +12,6 @@ def display():
     c = conn.cursor()
     timeout = 0
     previous_display_msg = " "
-
     while True:
         try:
             sign = alphasign.Serial(device='/dev/ttyUSB0')
@@ -30,8 +29,6 @@ def display():
                 mode = getattr(alphasign.modes, str(row[3]))
                 font = getattr(alphasign.charsets, str(row[2]))
 
-                print("Writing message: %s, color: %s, font: %s, mode: %s" % (message, color, font, mode))
-
                 display_msg = alphasign.Text("%s%s%s" % (color, font, message),
                                                 label="A",
                                                 mode=mode)
@@ -44,12 +41,16 @@ def display():
                     except Exception as e:
                         print("Failed to write to sign: " + str(e))
                         continue #not working correctly
-                else:
-                    print("Display message has not changed. Skipping write...")
+                #else:
+                #    print("Display message has not changed. Skipping write...")
 
-                time.sleep(sleepBetweenMessages)
+                if(rows.arraysize > 1):
+                    time.sleep(sleepBetweenMessages)
                 timeout = 0
-            time.sleep(sleepBetweenMessages)
+            if(rows.arraysize > 1):
+                time.sleep(sleepBetweenMessages)
+            else:
+                time.sleep(1)
 
         except Exception as e:
             print("General Exception: " + str(e))
@@ -60,7 +61,6 @@ def display():
                 time.sleep(timeout)
                 timeout += 1
                 print("Timeout: " + str(timeout))
-
 
 if __name__ == '__main__':
     display()
