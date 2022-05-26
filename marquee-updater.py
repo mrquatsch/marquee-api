@@ -30,8 +30,6 @@ def display():
                 mode = getattr(alphasign.modes, str(row[3]))
                 font = getattr(alphasign.charsets, str(row[2]))
 
-                print("Writing message: %s, color: %s, font: %s, mode: %s" % (message, color, font, mode))
-
                 display_msg = alphasign.Text("%s%s%s" % (color, font, message),
                                                 label="A",
                                                 mode=mode)
