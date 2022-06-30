@@ -29,7 +29,29 @@ def display():
                 mode = getattr(alphasign.modes, str(row[3]))
                 font = getattr(alphasign.charsets, str(row[2]))
 
-                display_msg = alphasign.Text("%s%s%s" % (color, font, message),
+                # See if our message starts with ###
+                # This is unique to how we send "artist - title" metadata
+                if(message.startswith('###')):
+                    # Remove that initial identifier
+                    message = message.lstrip('###')
+                    # Split it
+                    messageList = message.split('###')
+                    # Validate we have six items
+                    if(len(messageList = 6)):
+                        firstColor = messageList[0]
+                        firstMessage = messageList[1]
+                        secondColor = messageList[2]
+                        secondMessage = messageList[3]
+                        thirdColor = messageList[4]
+                        thirdMessage = messageList[5]
+
+                        display_msg = alphasign.Text("%s%s%s%s%s%s%s%s%s" % (firstColor, font, firstMessage,
+                                                    secondColor, font, secondMessage,
+                                                    thirdColor, font, thirdMessage),
+                                                    label="A",
+                                                    mode=mode)
+                else:
+                    display_msg = alphasign.Text("%s%s%s" % (color, font, message),
                                                 label="A",
                                                 mode=mode)
 
