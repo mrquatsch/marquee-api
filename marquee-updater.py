@@ -29,35 +29,45 @@ def display():
                 mode = getattr(alphasign.modes, str(row[3]))
                 font = getattr(alphasign.charsets, str(row[2]))
 
-                # See if our message starts with ###
-                # This is unique to how we send "artist - title" metadata
-                if(message.startswith('###')):
-                    # Remove that initial identifier
-                    message = message.lstrip('###')
-                    # Split it
-                    messageList = message.split('###')
-                    # Validate we have six items
-                    if(len(messageList = 6)):
-                        firstColor = messageList[0]
-                        firstMessage = messageList[1]
-                        secondColor = messageList[2]
-                        secondMessage = messageList[3]
-                        thirdColor = messageList[4]
-                        thirdMessage = messageList[5]
+                try:
+                    # See if our message starts with ###
+                    # This is unique to how we send "artist - title" metadata
+                    if(message.startswith('###')):
+                        # Remove that initial identifier
+                        message = message.lstrip('###')
+                        # Split it
+                        messageList = message.split('###')
+                        # Validate we have six items
+                        if(len(messageList) == 6):
+                            firstColor = messageList[0]
+                            firstMessage = messageList[1]
+                            secondColor = messageList[2]
+                            secondMessage = messageList[3]
+                            thirdColor = messageList[4]
+                            thirdMessage = messageList[5]
 
-                        display_msg = alphasign.Text("%s%s%s%s%s%s%s%s%s" % (firstColor, font, firstMessage,
-                                                    secondColor, font, secondMessage,
-                                                    thirdColor, font, thirdMessage),
+                            # print("Writing color one: %s, message one: %s, color two: %s, message two: %s, " \
+                            #     "color three: %s, message three: %s, font: %s, mode: %s" % (firstColor, firstMessage, 
+                            #     secondColor, secondMessage, thirdColor, thirdMessage, font, mode))
+                            display_msg = alphasign.Text("%s%s%s%s%s%s%s%s%s" % (firstColor, font, firstMessage,
+                                                        secondColor, font, secondMessage,
+                                                        thirdColor, font, thirdMessage),
+                                                        label="A",
+                                                        mode=mode)
+                    else:
+                        # print("Writing message: %s, color: %s, font: %s, mode: %s" % (message, color, font, mode))
+                        display_msg = alphasign.Text("%s%s%s" % (color, font, message),
                                                     label="A",
                                                     mode=mode)
-                else:
+                except Exception as e:
+                    # print("Failed to handle custom artist title formatting in message: %s\n%s" % (message, str(e)))
+                    # print("Writing message: %s, color: %s, font: %s, mode: %s" % (message, color, font, mode))
                     display_msg = alphasign.Text("%s%s%s" % (color, font, message),
                                                 label="A",
                                                 mode=mode)
 
                 if(str(display_msg) != str(previous_display_msg)):
                     try:
-                        print("Writing message: %s, color: %s, font: %s, mode: %s" % (message, color, font, mode))
                         sign.write(display_msg)
                         previous_display_msg = display_msg
                     except Exception as e:
