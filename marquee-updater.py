@@ -25,7 +25,7 @@ def display():
                 'order by message_id desc')
             for row in rows:
                 message = str(row[0])
-                color = getattr(alphasign.colors, str(row[1]))
+                color = convertStringToColor(str(row[1]))
                 mode = getattr(alphasign.modes, str(row[3]))
                 font = getattr(alphasign.charsets, str(row[2]))
 
@@ -39,12 +39,12 @@ def display():
                         messageList = message.split('###')
                         # Validate we have six items
                         if(len(messageList) == 6):
-                            firstColor = messageList[0]
-                            firstMessage = messageList[1]
-                            secondColor = messageList[2]
-                            secondMessage = messageList[3]
-                            thirdColor = messageList[4]
-                            thirdMessage = messageList[5]
+                            firstColor =  convertStringToColor(str(messageList[0]))
+                            firstMessage = str(messageList[1])
+                            secondColor = convertStringToColor(str(messageList[2]))
+                            secondMessage = str(messageList[3])
+                            thirdColor = convertStringToColor(str(messageList[4]))
+                            thirdMessage = str(messageList[5])
 
                             # print("Writing color one: %s, message one: %s, color two: %s, message two: %s, " \
                             #     "color three: %s, message three: %s, font: %s, mode: %s" % (firstColor, firstMessage, 
@@ -73,8 +73,8 @@ def display():
                     except Exception as e:
                         print("Failed to write to sign: " + str(e))
                         continue #not working correctly
-                #else:
-                #    print("Display message has not changed. Skipping write...")
+                # else:
+                #     print("Display message has not changed. Skipping write...")
 
                 if(rows.arraysize > 1):
                     time.sleep(sleepBetweenMessages)
@@ -93,6 +93,10 @@ def display():
                 time.sleep(timeout)
                 timeout += 1
                 print("Timeout: " + str(timeout))
+
+def convertStringToColor(string):
+    # print("Converting string %s to color" % (str(string)))
+    return getattr(alphasign.colors, str(string))
 
 if __name__ == '__main__':
     display()
