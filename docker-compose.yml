@@ -7,22 +7,34 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    #privileged: true
     volumes:
       - /mnt/docker/marquee:/app
     devices:
       - /dev/ttyUSB0:/dev/ttyUSB0
     command: python -u /app/marquee-updater.py > /dev/ttyUSB0
     restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-file: 5
+        max-size: 10m
   maruqee-ui:
     container_name: marquee-ui
     image: marquee
     environment:
       - FLASK_APP=/app/marquee-ui.py
+    #privileged: true
     volumes:
       - /mnt/docker/marquee:/app
-    devices:
-      - /dev/ttyUSB0:/dev/ttyUSB0
+    #devices:
+    #  - "/dev/ttyUSB0:/dev/ttyUSB0"
     network_mode: host
     command: python -u -m flask run --host=0.0.0.0 --port=80 --with-threads
     restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-file: 5
+        max-size: 10m
 

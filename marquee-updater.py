@@ -5,6 +5,8 @@ import alphasign
 import sqlite3
 import serial
 import time
+import pytz
+from datetime import datetime
 
 def display():
     sleepBetweenMessages = 20
@@ -45,23 +47,25 @@ def display():
                             secondMessage = str(messageList[3])
                             thirdColor = convertStringToColor(str(messageList[4]))
                             thirdMessage = str(messageList[5])
+                            timestampString = createTimeString()
 
-                            # print("Writing color one: %s, message one: %s, color two: %s, message two: %s, " \
-                            #     "color three: %s, message three: %s, font: %s, mode: %s" % (firstColor, firstMessage, 
-                            #     secondColor, secondMessage, thirdColor, thirdMessage, font, mode))
-                            display_msg = alphasign.Text("%s%s%s%s%s%s%s%s%s" % (firstColor, font, firstMessage,
+                            print("Writing color one: %s, message one: %s, color two: %s, message two: %s, " \
+                                "color three: %s, message three: %s, font: %s, timestamp: %s, mode: %s" % (firstColor, firstMessage, 
+                                secondColor, secondMessage, thirdColor, thirdMessage, font, timestampString, mode))
+                            display_msg = alphasign.Text("%s%s%s%s%s%s%s%s%s%s" % (firstColor, font, firstMessage,
                                                         secondColor, font, secondMessage,
-                                                        thirdColor, font, thirdMessage),
+                                                        thirdColor, font, thirdMessage,
+                                                        timestampString),
                                                         label="A",
                                                         mode=mode)
                     else:
-                        # print("Writing message: %s, color: %s, font: %s, mode: %s" % (message, color, font, mode))
+                        print("Writing message: %s, color: %s, font: %s, mode: %s" % (message, color, font, mode))
                         display_msg = alphasign.Text("%s%s%s" % (color, font, message),
                                                     label="A",
                                                     mode=mode)
                 except Exception as e:
-                    # print("Failed to handle custom artist title formatting in message: %s\n%s" % (message, str(e)))
-                    # print("Writing message: %s, color: %s, font: %s, mode: %s" % (message, color, font, mode))
+                    print("Failed to handle custom artist title formatting in message: %s\n%s" % (message, str(e)))
+                    print("Writing message: %s, color: %s, font: %s, mode: %s" % (message, color, font, mode))
                     display_msg = alphasign.Text("%s%s%s" % (color, font, message),
                                                 label="A",
                                                 mode=mode)
@@ -73,8 +77,8 @@ def display():
                     except Exception as e:
                         print("Failed to write to sign: " + str(e))
                         continue #not working correctly
-                # else:
-                #     print("Display message has not changed. Skipping write...")
+                else:
+                    print("Display message has not changed. Skipping write...")
 
                 if(rows.arraysize > 1):
                     time.sleep(sleepBetweenMessages)
@@ -98,5 +102,23 @@ def convertStringToColor(string):
     # print("Converting string %s to color" % (str(string)))
     return getattr(alphasign.colors, str(string))
 
+def createTimeString():
+    CST = pytz.timezone('America/Chicago')
+    now = datetime.now(CST)
+
+    current_time = " - TIME: " + now.strftime("%H:%M")
+    font = getattr(alphasign.charsets, "SEVEN_HIGH_FANCY")
+    colors = ['RED', 'GREEN', 'AMBER']
+    colorCounter = 0
+    current_time.split()
+    newTimeString = ""
+    for i in list(current_time):
+        if colorCounter == len(colors):
+            colorCounter = 0
+        newTimeString += (convertStringToColor(colors[colorCounter]) + font + i)
+        colorCounter += 1
+    return newTimeString
+
 if __name__ == '__main__':
     display()
+

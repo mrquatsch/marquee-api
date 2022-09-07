@@ -3,3 +3,5 @@ interfaces
 flask
 psutil
 constants
+flasgger
+pytz
